@@ -1,0 +1,51 @@
+---
+- name: create directory
+  file:
+    path: /opt/fleet-auto-deploy-{{ version }}
+    state: directory
+
+- name: create temporary directory to extract files
+  file:
+    path: /opt/temp
+    state: directory
+
+
+- name: extract files
+  unarchive:
+    src: "{{ build_file }}"
+    dest: /opt/temp
+
+- name: move files
+  shell: mv /opt/temp/* /opt/fleet-auto-deploy-{{ version }}
+  notify:
+    - remove temp
+
+- name: copy config from older version
+  copy:
+    src: /opt/fleet-auto-deploy-{{ old_version }}/config
+    dest: /opt/fleet-auto-deploy-{{ version }}
+    remote_src: yes
+    directory_mode: yes
+
+- name: create symlink 
+  file:
+    src: /opt/fleet-auto-deploy-{{ version }}/config/dev/config.yml
+    dest: /opt/fleet-auto-deploy-{{ version }}/config.yml
+    state: link
+    force: yes
+    remote_src: yes
+
+   
+- name: stop service
+  systemd:
+    name: fleet-auto-deploy.service
+    state: stopped
+
+- name: change the service version from old version to new version 
+  replace:
+    path: /etc/systemd/system/fleet-auto-deploy.service
+    regexp: "{{ old_version }}"
+    replace: "{{ version }}"
+
+
+# tasks file for deploy-project

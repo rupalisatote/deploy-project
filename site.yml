@@ -1,0 +1,6 @@
+- name: deploy-project deploy
+  hosts: dev
+  become: yes
+  become_user: root
+  roles:
+    - deploy-project

@@ -1,0 +1,6 @@
+---
+- name: remove temp
+  file:
+    path: /opt/temp
+    state: absent
+# handlers file for deploy-project
