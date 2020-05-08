@@ -1,5 +1,5 @@
 ---
-build_file:
-version:
-old_version: 
+build_file: fleet-auto-deploy-0.7.0.zip
+version: 0.7.0
+old_version: 0.6.0
 # vars file for deploy-project

@@ -9,7 +9,6 @@
     path: /opt/temp
     state: directory
 
-
 - name: extract files
   unarchive:
     src: "{{ build_file }}"
@@ -27,15 +26,11 @@
     remote_src: yes
     directory_mode: yes
 
-- name: create symlink 
-  file:
-    src: /opt/fleet-auto-deploy-{{ version }}/config/dev/config.yml
-    dest: /opt/fleet-auto-deploy-{{ version }}/config.yml
-    state: link
-    force: yes
-    remote_src: yes
-
-   
+- name: create symlink
+  shell: ln -s ./config/prd/config.yml config.yml
+  args:
+    chdir: /opt/fleet-auto-deploy-{{ version }}
+ 
 - name: stop service
   systemd:
     name: fleet-auto-deploy.service
@@ -46,6 +41,7 @@
     path: /etc/systemd/system/fleet-auto-deploy.service
     regexp: "{{ old_version }}"
     replace: "{{ version }}"
-
+  notify:
+    - start service
 
 # tasks file for deploy-project

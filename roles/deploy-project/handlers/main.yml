@@ -3,4 +3,10 @@
   file:
     path: /opt/temp
     state: absent
+
+- name: stop service
+  systemd:
+    name: fleet-auto-deploy.service
+    state: started
+
 # handlers file for deploy-project
